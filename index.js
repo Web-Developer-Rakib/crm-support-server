@@ -27,11 +27,19 @@ const run = async () => {
     app.get("/", (req, res) => {
       res.send("Hello world");
     });
-    //Post users info
+    //Post registered users info
     app.post("/post-user", async (req, res) => {
-      const userDetails = req.body;
-      const result = await usersCollection.insertOne(userDetails);
-      res.send(result);
+      const username = req.body.userName;
+      const existingUser = await usersCollection.findOne({
+        userName: username,
+      });
+      if (existingUser === null) {
+        const userDetails = req.body;
+        await usersCollection.insertOne(userDetails);
+        res.send({ added: "Employee added successfully." });
+      } else {
+        res.send({ exist: "Username already exist. try diffrent." });
+      }
     });
     //Post login info
     app.post("/login", async (req, res) => {
@@ -51,7 +59,7 @@ const run = async () => {
         res.send({ Error: "Something went wrong" });
       }
     });
-    //Post users info
+    //Post customer details
     app.post("/post-customer-details", async (req, res) => {
       const customerDetails = req.body;
       const result = await customersCollection.insertOne(customerDetails);
