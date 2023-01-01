@@ -1,4 +1,5 @@
 const express = require("express");
+const bcrypt = require("bcrypt");
 const app = express();
 require("dotenv").config();
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -34,11 +35,16 @@ const run = async () => {
         userName: username,
       });
       if (existingUser === null) {
-        const userDetails = req.body;
+        const name = req.body.name;
+        const userName = req.body.userName;
+        const userType = req.body.userType;
+        const password = req.body.password;
+        const hashp = await bcrypt.hash(password, 10);
+        const userDetails = { name, userName, userType, hashp };
         await usersCollection.insertOne(userDetails);
         res.send({ added: "Employee added successfully." });
       } else {
-        res.send({ exist: "Username already exist. try diffrent." });
+        res.send({ exist: "Username already exist. Try different one." });
       }
     });
     //Post login info
@@ -49,8 +55,11 @@ const run = async () => {
         const matchedUser = await usersCollection.findOne({
           userName: username,
         });
-
-        if (matchedUser.password === password) {
+        const passwordMatched = await bcrypt.compare(
+          password,
+          matchedUser.hashp
+        );
+        if (passwordMatched) {
           res.send(matchedUser);
         } else {
           res.send({ Invalid: "invalid login details." });
