@@ -74,6 +74,20 @@ const run = async () => {
       const result = await customersCollection.insertOne(customerDetails);
       res.send(result);
     });
+    //Get all custommers data
+    app.get("/customers", async (req, res) => {
+      const query = {};
+      const cursor = customersCollection.find(query);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    //Get a single customer
+    app.post("/customer", async (req, res) => {
+      const id = req.body.id;
+      const query = { _id: ObjectId(id) };
+      const customer = await customersCollection.findOne(query);
+      res.send(customer);
+    });
   } finally {
     // Connection continue
   }
