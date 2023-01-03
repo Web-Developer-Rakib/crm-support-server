@@ -25,9 +25,7 @@ const run = async () => {
     const customersCollection = client
       .db("crm_support")
       .collection("customers");
-    app.get("/", (req, res) => {
-      res.send("Hello world");
-    });
+
     //Post registered users info
     app.post("/post-user", async (req, res) => {
       const username = req.body.userName;
@@ -55,12 +53,23 @@ const run = async () => {
         const matchedUser = await usersCollection.findOne({
           userName: username,
         });
+        // Password excluded
+        const name = matchedUser.name;
+        const userName = matchedUser.userName;
+        const userType = matchedUser.userType;
+        const id = matchedUser._id;
+        const matchedUsersData = {
+          name,
+          userName,
+          userType,
+          id,
+        };
         const passwordMatched = await bcrypt.compare(
           password,
           matchedUser.hashp
         );
         if (passwordMatched) {
-          res.send(matchedUser);
+          res.send(matchedUsersData);
         } else {
           res.send({ Invalid: "invalid login details." });
         }
@@ -87,6 +96,13 @@ const run = async () => {
       const query = { _id: ObjectId(id) };
       const customer = await customersCollection.findOne(query);
       res.send(customer);
+    });
+    // Delete customer
+    app.delete("/delete-customer/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await customersCollection.deleteOne(query);
+      res.send(result);
     });
   } finally {
     // Connection continue
