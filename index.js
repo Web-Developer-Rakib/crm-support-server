@@ -104,6 +104,31 @@ const run = async () => {
       const result = await customersCollection.deleteOne(query);
       res.send(result);
     });
+    //Update customers info
+    app.put("/update-customer", async (req, res) => {
+      const customersInfo = req.body;
+      const id = customersInfo.cid;
+      const filter = { _id: ObjectId(id) };
+      const updateDoc = {
+        $set: {
+          customerName: customersInfo.customerName,
+          contactNumber: customersInfo.contactNumber,
+          email: customersInfo.email,
+          status: customersInfo.status,
+          leadDate: customersInfo.leadDate,
+          personIncharge: customersInfo.personIncharge,
+          inchargeUsername: customersInfo.inchargeUsername,
+          comment: customersInfo.comment,
+        },
+      };
+      const options = { upsert: true };
+      const result = await customersCollection.updateOne(
+        filter,
+        updateDoc,
+        options
+      );
+      res.send(result);
+    });
   } finally {
     // Connection continue
   }
