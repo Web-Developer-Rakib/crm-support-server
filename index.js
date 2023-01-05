@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 //DB info
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kobuznu.mongodb.net/?retryWrites=true&w=majority`;
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.wwpjvfb.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -21,9 +21,9 @@ const run = async () => {
     // DB client connect
     await client.connect();
     //Collections
-    const usersCollection = client.db("crm_support").collection("users");
+    const usersCollection = client.db("jooskart_crm").collection("users");
     const customersCollection = client
-      .db("crm_support")
+      .db("jooskart_crm")
       .collection("customers");
 
     //Post registered users info
