@@ -116,6 +116,7 @@ const run = async () => {
           email: customersInfo.email,
           status: customersInfo.status,
           leadDate: customersInfo.leadDate,
+          cbDate: customersInfo.cbDate,
           personIncharge: customersInfo.personIncharge,
           inchargeUsername: customersInfo.inchargeUsername,
           comment: customersInfo.comment,
